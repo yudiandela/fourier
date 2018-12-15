@@ -11,8 +11,10 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Auth::routes(['register' => false]);
 
-Route::resource('anggota', 'AnggotaController');
+Route::group(['middleware' => ['auth']], function () {
+    Route::get('/', 'HomeController@index')->name('index');
+
+    Route::resource('anggota', 'AnggotaController');
+});
