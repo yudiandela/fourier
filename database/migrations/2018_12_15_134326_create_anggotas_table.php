@@ -15,6 +15,9 @@ class CreateAnggotasTable extends Migration
     {
         Schema::create('anggotas', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('name');
+            $table->string('pangkat');
+            $table->string('nrp')->unique();
             $table->timestamps();
         });
     }

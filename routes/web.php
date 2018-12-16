@@ -16,5 +16,7 @@ Auth::routes(['register' => false]);
 Route::group(['middleware' => ['auth']], function () {
     Route::get('/', 'HomeController@index')->name('index');
 
-    Route::resource('anggota', 'AnggotaController');
+    Route::resource('anggota', 'AnggotaController')->parameters([
+        'anggota' => 'anggota'
+    ]);
 });

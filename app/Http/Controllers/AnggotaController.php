@@ -12,9 +12,10 @@ class AnggotaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Anggota $anggota)
     {
-        return 'Halaman index anggota';
+        $anggotas = $anggota->all();
+        return view('anggota.index', compact('anggotas'));
     }
 
     /**
@@ -24,7 +25,7 @@ class AnggotaController extends Controller
      */
     public function create()
     {
-        //
+        return view('anggota.create');
     }
 
     /**
@@ -35,7 +36,19 @@ class AnggotaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name'    => ['required', 'string', 'min:3', 'max:255'],
+            'pangkat' => ['required', 'string', 'min:3', 'max:255'],
+            'nrp'     => ['required', 'integer', 'unique:anggotas,nrp'],
+        ]);
+
+        Anggota::create([
+            'name'    => $request->name,
+            'pangkat' => $request->pangkat,
+            'nrp'     => $request->nrp,
+        ]);
+
+        return redirect()->route('anggota.index')->with('success', 'Berhasil input data baru');
     }
 
     /**
