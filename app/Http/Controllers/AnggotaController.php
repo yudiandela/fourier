@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Anggota;
+use App\Models\Pangkat;
 use Illuminate\Http\Request;
 
 class AnggotaController extends Controller
@@ -14,7 +15,7 @@ class AnggotaController extends Controller
      */
     public function index(Anggota $anggota)
     {
-        $anggotas = $anggota->all();
+        $anggotas = $anggota->with('pangkat')->get();
         return view('anggota.index', compact('anggotas'));
     }
 
@@ -23,9 +24,10 @@ class AnggotaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Pangkat $pangkat)
     {
-        return view('anggota.create');
+        $pangkats = $pangkat->all();
+        return view('anggota.create', compact('pangkats'));
     }
 
     /**
@@ -38,14 +40,14 @@ class AnggotaController extends Controller
     {
         $request->validate([
             'name'    => ['required', 'string', 'min:3', 'max:255'],
-            'pangkat' => ['required', 'string', 'min:3', 'max:255'],
+            'pangkat' => ['required'],
             'nrp'     => ['required', 'integer', 'unique:anggotas,nrp'],
         ]);
 
         Anggota::create([
-            'name'    => $request->name,
-            'pangkat' => $request->pangkat,
-            'nrp'     => $request->nrp,
+            'name'       => $request->name,
+            'pangkat_id' => $request->pangkat,
+            'nrp'        => $request->nrp,
         ]);
 
         return redirect()->route('anggota.index')->with('success', 'Berhasil input data baru');
@@ -59,7 +61,7 @@ class AnggotaController extends Controller
      */
     public function show(Anggota $anggota)
     {
-        //
+        return view('anggota.show', compact('anggota'));
     }
 
     /**
@@ -68,9 +70,10 @@ class AnggotaController extends Controller
      * @param  \App\Models\Anggota  $anggota
      * @return \Illuminate\Http\Response
      */
-    public function edit(Anggota $anggota)
+    public function edit(Pangkat $pangkat, Anggota $anggota)
     {
-        //
+        $pangkats = $pangkat->all();
+        return view('anggota.edit', compact('pangkats', 'anggota'));
     }
 
     /**
@@ -82,7 +85,19 @@ class AnggotaController extends Controller
      */
     public function update(Request $request, Anggota $anggota)
     {
-        //
+        $request->validate([
+            'name'    => ['required', 'string', 'min:3', 'max:255'],
+            'pangkat' => ['required'],
+            'nrp'     => ['required', 'integer', 'unique:anggotas,nrp,' . $anggota->id],
+        ]);
+
+        Anggota::where('id', $anggota->id)->update([
+            'name'       => $request->name,
+            'pangkat_id' => $request->pangkat,
+            'nrp'        => $request->nrp,
+        ]);
+
+        return redirect()->route('anggota.index')->with('success', 'Berhasil ubah data');
     }
 
     /**
@@ -93,6 +108,8 @@ class AnggotaController extends Controller
      */
     public function destroy(Anggota $anggota)
     {
-        //
+        $anggota->delete();
+
+        return redirect()->route('anggota.index')->with('success', 'Berhasil menghapus data anggota');
     }
 }

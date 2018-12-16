@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Anggota;
 use Illuminate\Database\Eloquent\Model;
 
 class Pangkat extends Model
@@ -26,4 +27,9 @@ class Pangkat extends Model
      * @var boolean
      */
     public $timestamps = false;
+
+    // public function anggotas()
+    // {
+    //     return $this->hasMany(Anggota::class);
+    // }
 }

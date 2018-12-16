@@ -12,6 +12,11 @@ class Anggota extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'pangkat', 'nrp',
+        'name', 'pangkat_id', 'nrp',
     ];
+
+    public function pangkat()
+    {
+        return $this->belongsTo(Pangkat::class);
+    }
 }

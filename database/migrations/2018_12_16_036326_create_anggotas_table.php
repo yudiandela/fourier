@@ -16,9 +16,11 @@ class CreateAnggotasTable extends Migration
         Schema::create('anggotas', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
-            $table->string('pangkat');
+            $table->unsignedInteger('pangkat_id');
             $table->string('nrp')->unique();
             $table->timestamps();
+
+            $table->foreign('pangkat_id')->references('id')->on('pangkat')->onDelete('cascade');
         });
     }
 
