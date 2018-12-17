@@ -4,11 +4,11 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-10">
-                @if (session('success'))
-                    <div class="alert alert-success" role="alert">
-                        {{ session('success') }}
-                    </div>
+
+                @if (session())
+                    <div class="session" data-session="{{ session('success') ? session('success') : session('failed') }}"></div>
                 @endif
+
                 <div class="card">
                     <div class="card-header">
                         List Anggota
@@ -65,3 +65,16 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+    <script>
+        const session = $('.session').data('session');
+        if(session) {
+            Swal({
+                type: session.match(/Berhasil/) ? 'success' : 'error',
+                title: session.match(/Berhasil/) ? 'Success..!!' : 'Failed..!!',
+                text: session
+            });
+        }
+    </script>
+@endpush
