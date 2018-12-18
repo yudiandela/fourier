@@ -15,7 +15,10 @@ class AnggotaController extends Controller
      */
     public function index(Anggota $anggota)
     {
-        $anggotas = $anggota->with('pangkat')->get();
+        $anggotas = $anggota->with('pangkat')
+                            ->orderBy('id', 'desc')
+                            ->paginate(env('PER_PAGE', 5));
+
         return view('anggota.index', compact('anggotas'));
     }
 
@@ -41,7 +44,7 @@ class AnggotaController extends Controller
         $request->validate([
             'name'    => ['required', 'string', 'min:3', 'max:255'],
             'pangkat' => ['required'],
-            'nrp'     => ['required', 'integer', 'unique:anggotas,nrp'],
+            'nrp'     => ['required', 'integer', 'unique:anggota,nrp'],
         ]);
 
         Anggota::create([
@@ -88,7 +91,7 @@ class AnggotaController extends Controller
         $request->validate([
             'name'    => ['required', 'string', 'min:3', 'max:255'],
             'pangkat' => ['required'],
-            'nrp'     => ['required', 'integer', 'unique:anggotas,nrp,' . $anggota->id],
+            'nrp'     => ['required', 'integer', 'unique:anggota,nrp,' . $anggota->id],
         ]);
 
         Anggota::where('id', $anggota->id)->update([
